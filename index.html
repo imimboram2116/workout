@@ -57,6 +57,10 @@
     height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg);
     color: var(--sub); font-size: 14px; font-weight: 600;
   }
+  .add-set {
+    margin-top: 8px; width: 100%; height: 40px; border-radius: 10px; border: 1px dashed var(--line);
+    background: transparent; color: var(--sub); font-size: 14px;
+  }
   .set.done .check { background: var(--accent); color: #fff; border-color: var(--accent); }
   .memo { width: 100%; margin-top: 10px; padding: 8px; font-size: 15px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }
   .bar {
@@ -214,26 +218,19 @@ function bodySvg(fig) {
   </svg>`;
 }
 
-const list = document.getElementById("list");
-EXERCISES.forEach(ex => {
-  const card = document.createElement("section");
-  card.className = "card";
-  card.innerHTML = `
-    <h2>${ex.name}</h2>
-    <div class="presc">${ex.presc}</div>
-    <div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>
-    <div class="target">자극점: <b>${ex.target}</b></div>
-    <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
-    <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
-    <div class="sets"></div>`;
-  const setsEl = card.querySelector(".sets");
-  ex.sets.forEach((s, i) => {
+// 처방 세트 + 직접 추가한 세트. 추가 세트는 마지막 처방 세트의 무게, 목표를 따른다
+function allSets(ex) {
+  const last = ex.sets[ex.sets.length - 1];
+  const extra = Array.from({ length: state[`${ex.id}-extra`] || 0 }, () => ({ kg: last.kg, goal: last.goal, extra: true }));
+  return ex.sets.concat(extra);
+}
+function makeRow(ex, s, i) {
     const key = `${ex.id}-${i}`;
     const st = state[key] || (state[key] = { kg: s.kg, reps: "", done: false });
     const row = document.createElement("div");
     row.className = "set" + (st.done ? " done" : "");
     row.innerHTML = `
-      <div class="no">${i + 1}세트<small>${s.optional ? "선택 · " : ""}목표 ${s.goal}</small><small class="at">${st.at ? st.at + " 완료" : ""}</small></div>
+      <div class="no">${i + 1}세트<small>${s.extra ? "추가 · " : s.optional ? "선택 · " : ""}목표 ${s.goal}</small><small class="at">${st.at ? st.at + " 완료" : ""}</small></div>
       <label class="field"><input type="number" inputmode="decimal" step="0.5" value="${st.kg}" aria-label="무게">kg</label>
       <label class="field"><input type="number" inputmode="numeric" placeholder="${s.goal.split("~").pop()}" value="${st.reps}" aria-label="횟수">회</label>
       <button class="check">${st.done ? "완료" : "미완"}</button>`;
@@ -252,8 +249,33 @@ EXERCISES.forEach(ex => {
       btn.textContent = st.done ? "완료" : "미완";
       save(); updateProgress();
     });
-    setsEl.appendChild(row);
+    return row;
+}
+
+const list = document.getElementById("list");
+EXERCISES.forEach(ex => {
+  const card = document.createElement("section");
+  card.className = "card";
+  card.innerHTML = `
+    <h2>${ex.name}</h2>
+    <div class="presc">${ex.presc}</div>
+    <div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>
+    <div class="target">자극점: <b>${ex.target}</b></div>
+    <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
+    <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
+    <div class="sets"></div>`;
+  const setsEl = card.querySelector(".sets");
+  allSets(ex).forEach((s, i) => setsEl.appendChild(makeRow(ex, s, i)));
+  const add = document.createElement("button");
+  add.className = "add-set";
+  add.textContent = "+ 세트 추가";
+  add.addEventListener("click", () => {
+    state[`${ex.id}-extra`] = (state[`${ex.id}-extra`] || 0) + 1;
+    const sets = allSets(ex);
+    setsEl.appendChild(makeRow(ex, sets[sets.length - 1], sets.length - 1));
+    save();
   });
+  card.appendChild(add);
   list.appendChild(card);
 });
 
@@ -278,11 +300,11 @@ function toast(msg) {
 document.getElementById("copy").addEventListener("click", async () => {
   const lines = [`${dateKey} 상체 B`];
   EXERCISES.forEach(ex => {
-    const done = ex.sets.map((s, i) => state[`${ex.id}-${i}`]).filter(st => st && st.done);
+    const done = allSets(ex).map((s, i) => state[`${ex.id}-${i}`]).filter(st => st && st.done);
     lines.push(`${ex.name.slice(2)}: ` + (done.length ? done.map(st => `${st.kg}kg×${st.reps || "?"}`).join(", ") : "안 함"));
   });
   const order = [];
-  EXERCISES.forEach(ex => ex.sets.forEach((s, i) => {
+  EXERCISES.forEach(ex => allSets(ex).forEach((s, i) => {
     const st = state[`${ex.id}-${i}`];
     if (st && st.done) order.push({ ts: st.ts || 0, line: `${st.at || "?"} ${ex.name.slice(0, 1)} ${i + 1}세트 ${st.kg}kg×${st.reps || "?"}` });
   }));
