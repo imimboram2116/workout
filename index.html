@@ -65,6 +65,11 @@
   }
   .bar button { flex: 1; max-width: 260px; height: 46px; border-radius: 10px; font-size: 15px; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
   .bar .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .photos { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
+  .photos figure { margin: 0; flex: 1; min-width: 0; max-width: 240px; text-align: center; font-size: 12px; color: var(--sub); }
+  .photos img { width: 100%; height: 190px; object-fit: contain; background: #fff; border-radius: 8px; border: 1px solid var(--line); }
+  .credits { margin-top: 20px; font-size: 11px; color: var(--sub); }
+  .credits a { color: var(--sub); }
   .figs { display: flex; gap: 8px; margin-top: 10px; }
   .fig { flex: 1; min-width: 0; text-align: center; font-size: 12px; color: var(--sub); }
   .fig svg { width: 100%; max-width: 200px; height: auto; display: block; margin: 0 auto; }
@@ -86,6 +91,15 @@
   <div class="legend"><span><i style="background:var(--hit)"></i>주로 자극</span><span><i style="background:var(--hit2)"></i>같이 쓰임</span><span><i style="background:var(--avoid)"></i>여기가 당기면 자세 점검</span></div>
   <div id="list"></div>
   <textarea class="memo" id="memo" rows="3" placeholder="메모: 무릎, 허리 상태, 자극 위치 등"></textarea>
+  <div class="credits">
+    그림 출처 (위키미디어 공용):
+    <a href="https://commons.wikimedia.org/wiki/File:How_to_do_an_Overhead_Press.jpg">오버헤드 프레스</a> RangerJim, CC BY-SA 4.0 ·
+    <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-1.png">숄더 프레스 머신 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-2.png">2</a> ·
+    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-1.png">사이드 래터럴 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-2.png">2</a> ·
+    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-1.png">프론트 레이즈 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-2.png">2</a> — Everkinetic, CC BY-SA 3.0 ·
+    <a href="https://commons.wikimedia.org/wiki/File:Pec_deck_Fly.jpg">펙덱</a> Aliva Sahoo, CC BY-SA 4.0.
+    크기만 줄였고 내용은 고치지 않음. 몸 윤곽 그림은 직접 그린 것.
+  </div>
 </main>
 <div class="bar">
   <button id="reset">초기화</button>
@@ -96,7 +110,7 @@
 <script>
 const EXERCISES = [
   {
-    id: "ohp", figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "앞에서 본 모습: 어깨 앞쪽" }, { view: "back", main: ["triceps"], sub: [], cap: "뒤에서 본 모습: 팔 뒤쪽" } ], name: "① 바벨 오버헤드 프레스",
+    id: "ohp", photos: [ { src: "img/ohp.jpg", cap: "동작 순서 (영문 그림)" } ], figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "앞에서 본 모습: 어깨 앞쪽" }, { view: "back", main: ["triceps"], sub: [], cap: "뒤에서 본 모습: 팔 뒤쪽" } ], name: "① 바벨 오버헤드 프레스",
     presc: "15kg × 12~15회 × 2세트 + 10kg × 20회 × 1세트",
     target: "어깨 앞쪽(전면삼각근), 팔 뒤쪽(삼두)",
     cues: [
@@ -109,7 +123,7 @@ const EXERCISES = [
     sets: [ { kg: 15, goal: "12~15" }, { kg: 15, goal: "12~15" }, { kg: 10, goal: "20" } ]
   },
   {
-    id: "smp", figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "어깨 앞쪽이 주로, 옆쪽도 같이" } ], name: "② 숄더 프레스 머신",
+    id: "smp", photos: [ { src: "img/smp-1.jpg", cap: "시작" }, { src: "img/smp-2.jpg", cap: "끝" } ], figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "어깨 앞쪽이 주로, 옆쪽도 같이" } ], name: "② 숄더 프레스 머신",
     presc: "5kg × 15회 × 3세트",
     target: "어깨 앞쪽~옆쪽",
     cues: [
@@ -120,7 +134,7 @@ const EXERCISES = [
     sets: [ { kg: 5, goal: "15" }, { kg: 5, goal: "15" }, { kg: 5, goal: "15" } ]
   },
   {
-    id: "lat", figs: [ { view: "front", main: ["sideDelt"], sub: [], avoid: ["traps"], cap: "어깨 바깥쪽. 목 옆이 당기면 너무 높이 든 것" } ], name: "③ 덤벨 사이드 래터럴 레이즈",
+    id: "lat", photos: [ { src: "img/lat-1.jpg", cap: "시작" }, { src: "img/lat-2.jpg", cap: "끝 (어깨 높이까지)" } ], figs: [ { view: "front", main: ["sideDelt"], sub: [], avoid: ["traps"], cap: "어깨 바깥쪽. 목 옆이 당기면 너무 높이 든 것" } ], name: "③ 덤벨 사이드 래터럴 레이즈",
     presc: "2kg × 15회 × 3세트",
     target: "어깨 바깥쪽(측면삼각근)",
     cues: [
@@ -132,7 +146,7 @@ const EXERCISES = [
     sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15" }, { kg: 2, goal: "15" } ]
   },
   {
-    id: "front", figs: [ { view: "front", main: ["frontDelt"], sub: [], cap: "어깨 앞쪽" } ], name: "④ 덤벨 프론트 레이즈",
+    id: "front", photos: [ { src: "img/front-1.jpg", cap: "시작" }, { src: "img/front-2.jpg", cap: "끝 (어깨 높이까지)" } ], figs: [ { view: "front", main: ["frontDelt"], sub: [], cap: "어깨 앞쪽" } ], name: "④ 덤벨 프론트 레이즈",
     presc: "2kg × 15회 × 1세트 (여력 있으면 2세트)",
     target: "어깨 앞쪽",
     cues: [
@@ -142,7 +156,7 @@ const EXERCISES = [
     sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15", optional: true } ]
   },
   {
-    id: "pec", figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
+    id: "pec", photos: [ { src: "img/pec.jpg", cap: "기구 모습 (센터 기구와 다를 수 있음)" } ], figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
     presc: "10kg × 15회 × 3세트",
     target: "겨드랑이 바로 아래~옆가슴",
     cues: [
@@ -207,6 +221,7 @@ EXERCISES.forEach(ex => {
   card.innerHTML = `
     <h2>${ex.name}</h2>
     <div class="presc">${ex.presc}</div>
+    <div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>
     <div class="target">자극점: <b>${ex.target}</b></div>
     <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
     <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
