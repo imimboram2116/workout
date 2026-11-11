@@ -8,11 +8,13 @@
   :root {
     --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1f; --sub: #6b6b70;
     --line: #e4e2dc; --accent: #2f6f4f; --accent-soft: #e3efe8; --warn: #a3471f;
+    --body: #e9e6df; --body-line: #b9b4a8; --hit: #1f8a55; --hit2: #8fd1ad; --avoid: #e07a3f;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #141414; --card: #1f1f21; --text: #f2f2f2; --sub: #a0a0a6;
       --line: #333336; --accent: #6cc297; --accent-soft: #1f3a2c; --warn: #f08a5d;
+      --body: #2c2c2f; --body-line: #55555a; --hit: #4fd08f; --hit2: #2f6b4c; --avoid: #f08a5d;
     }
   }
   * { box-sizing: border-box; }
@@ -40,7 +42,7 @@
   .warn { color: var(--warn); font-weight: 600; }
   .sets { margin-top: 10px; display: grid; gap: 8px; }
   .set {
-    display: grid; grid-template-columns: 52px 1fr 1fr 64px; gap: 8px; align-items: center;
+    display: grid; grid-template-columns: 52px minmax(0,1fr) minmax(0,1fr) 64px; gap: 6px; align-items: center;
     padding: 8px; border: 1px solid var(--line); border-radius: 10px;
   }
   .set.done { background: var(--accent-soft); border-color: var(--accent); }
@@ -63,6 +65,11 @@
   }
   .bar button { flex: 1; max-width: 260px; height: 46px; border-radius: 10px; font-size: 15px; font-weight: 600; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
   .bar .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .figs { display: flex; gap: 8px; margin-top: 10px; }
+  .fig { flex: 1; min-width: 0; text-align: center; font-size: 12px; color: var(--sub); }
+  .fig svg { width: 100%; max-width: 200px; height: auto; display: block; margin: 0 auto; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--sub); margin-top: 6px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
   .toast { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; }
   .toast.show { opacity: 1; }
 </style>
@@ -76,6 +83,7 @@
   <div class="progress"><div id="bar"></div></div>
   <div class="progress-label" id="plabel"></div>
   <div class="note">허리가 뻐근해지면 그 종목에서 바로 멈추기. 서 있는 동안 왼쪽 무릎이 불편하면 ①은 건너뛰고 ②부터.</div>
+  <div class="legend"><span><i style="background:var(--hit)"></i>주로 자극</span><span><i style="background:var(--hit2)"></i>같이 쓰임</span><span><i style="background:var(--avoid)"></i>여기가 당기면 자세 점검</span></div>
   <div id="list"></div>
   <textarea class="memo" id="memo" rows="3" placeholder="메모: 무릎, 허리 상태, 자극 위치 등"></textarea>
 </main>
@@ -88,7 +96,7 @@
 <script>
 const EXERCISES = [
   {
-    id: "ohp", name: "① 바벨 오버헤드 프레스",
+    id: "ohp", figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "앞에서 본 모습: 어깨 앞쪽" }, { view: "back", main: ["triceps"], sub: [], cap: "뒤에서 본 모습: 팔 뒤쪽" } ], name: "① 바벨 오버헤드 프레스",
     presc: "15kg × 12~15회 × 2세트 + 10kg × 20회 × 1세트",
     target: "어깨 앞쪽(전면삼각근), 팔 뒤쪽(삼두)",
     cues: [
@@ -101,7 +109,7 @@ const EXERCISES = [
     sets: [ { kg: 15, goal: "12~15" }, { kg: 15, goal: "12~15" }, { kg: 10, goal: "20" } ]
   },
   {
-    id: "smp", name: "② 숄더 프레스 머신",
+    id: "smp", figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "어깨 앞쪽이 주로, 옆쪽도 같이" } ], name: "② 숄더 프레스 머신",
     presc: "5kg × 15회 × 3세트",
     target: "어깨 앞쪽~옆쪽",
     cues: [
@@ -112,7 +120,7 @@ const EXERCISES = [
     sets: [ { kg: 5, goal: "15" }, { kg: 5, goal: "15" }, { kg: 5, goal: "15" } ]
   },
   {
-    id: "lat", name: "③ 덤벨 사이드 래터럴 레이즈",
+    id: "lat", figs: [ { view: "front", main: ["sideDelt"], sub: [], avoid: ["traps"], cap: "어깨 바깥쪽. 목 옆이 당기면 너무 높이 든 것" } ], name: "③ 덤벨 사이드 래터럴 레이즈",
     presc: "2kg × 15회 × 3세트",
     target: "어깨 바깥쪽(측면삼각근)",
     cues: [
@@ -124,7 +132,7 @@ const EXERCISES = [
     sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15" }, { kg: 2, goal: "15" } ]
   },
   {
-    id: "front", name: "④ 덤벨 프론트 레이즈",
+    id: "front", figs: [ { view: "front", main: ["frontDelt"], sub: [], cap: "어깨 앞쪽" } ], name: "④ 덤벨 프론트 레이즈",
     presc: "2kg × 15회 × 1세트 (여력 있으면 2세트)",
     target: "어깨 앞쪽",
     cues: [
@@ -134,7 +142,7 @@ const EXERCISES = [
     sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15", optional: true } ]
   },
   {
-    id: "pec", name: "⑤ 펙덱 플라이 (가슴)",
+    id: "pec", figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
     presc: "10kg × 15회 × 3세트",
     target: "겨드랑이 바로 아래~옆가슴",
     cues: [
@@ -158,6 +166,40 @@ let state = {};
 try { state = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { state = {}; }
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
 
+const SHAPES = {
+  // 왼쪽 절반 좌표. 오른쪽은 x=100 기준으로 뒤집어 그린다
+  traps: '<path d="M91,44 Q80,50 66,55 L74,60 L92,56 Z"/>',
+  frontDelt: '<ellipse cx="65" cy="68" rx="8" ry="13"/>',
+  sideDelt: '<ellipse cx="54" cy="68" rx="7" ry="14"/>',
+  pec: '<path d="M99,60 L73,61 Q66,76 70,93 Q86,101 99,95 Z"/>',
+  pecOuter: '<ellipse cx="75" cy="80" rx="7" ry="13"/>',
+  triceps: '<path d="M47,76 Q42,98 44,120 L55,121 Q57,98 59,84 Z"/>',
+  backTraps: '<path d="M92,44 L66,55 L84,62 L100,100 L100,44 Z"/>'
+};
+const BASE_HALF = `
+  <path d="M91,40 L91,48 Q80,52 66,55 Q50,56 46,72 L41,122 L37,166 L50,167 L55,124 L60,88 L70,94 L74,150 L100,155 L100,40 Z"/>`;
+function bodySvg(fig) {
+  const half = (names, cls) => (names || []).map(n => SHAPES[n === "traps" && fig.view === "back" ? "backTraps" : n]).join("").replace(/<(path|ellipse)/g, `<$1 class="${cls}"`);
+  const layer = half(fig.sub, "sub") + half(fig.main, "main") + half(fig.avoid, "avoid");
+  const side = `<g>${BASE_HALF}</g>${layer}`;
+  const detail = fig.view === "front"
+    ? '<path d="M100,96 L100,150" class="ln"/><path d="M84,110 L116,110 M86,126 L114,126" class="ln"/>'
+    : '<path d="M100,60 L100,150" class="ln"/><path d="M72,92 Q86,104 100,102 Q114,104 128,92" class="ln"/>';
+  return `<svg viewBox="30 0 140 172" role="img" aria-label="${fig.cap}">
+    <style>
+      g path { fill: var(--body); stroke: var(--body-line); stroke-width: 1; }
+      .main { fill: var(--hit); } .sub { fill: var(--hit2); }
+      .avoid { fill: var(--avoid); opacity: .85; }
+      .ln { fill: none; stroke: var(--body-line); stroke-width: 1; }
+      .head { fill: var(--body); stroke: var(--body-line); }
+    </style>
+    <ellipse class="head" cx="100" cy="23" rx="14" ry="17"/>
+    ${side}
+    <g transform="translate(200,0) scale(-1,1)">${side}</g>
+    ${detail}
+  </svg>`;
+}
+
 const list = document.getElementById("list");
 EXERCISES.forEach(ex => {
   const card = document.createElement("section");
@@ -166,6 +208,7 @@ EXERCISES.forEach(ex => {
     <h2>${ex.name}</h2>
     <div class="presc">${ex.presc}</div>
     <div class="target">자극점: <b>${ex.target}</b></div>
+    <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
     <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
     <div class="sets"></div>`;
   const setsEl = card.querySelector(".sets");
@@ -175,7 +218,7 @@ EXERCISES.forEach(ex => {
     const row = document.createElement("div");
     row.className = "set" + (st.done ? " done" : "");
     row.innerHTML = `
-      <div class="no">${i + 1}세트<small>${s.optional ? "선택 · " : ""}목표 ${s.goal}</small></div>
+      <div class="no">${i + 1}세트<small>${s.optional ? "선택 · " : ""}목표 ${s.goal}</small><small class="at">${st.at ? st.at + " 완료" : ""}</small></div>
       <label class="field"><input type="number" inputmode="decimal" step="0.5" value="${st.kg}" aria-label="무게">kg</label>
       <label class="field"><input type="number" inputmode="numeric" placeholder="${s.goal.split("~").pop()}" value="${st.reps}" aria-label="횟수">회</label>
       <button class="check">${st.done ? "완료" : "미완"}</button>`;
@@ -186,6 +229,10 @@ EXERCISES.forEach(ex => {
     btn.addEventListener("click", () => {
       if (!st.done && !st.reps) { st.reps = s.goal.split("~").pop(); repsIn.value = st.reps; }
       st.done = !st.done;
+      const now = new Date();
+      st.at = st.done ? `${pad(now.getHours())}:${pad(now.getMinutes())}` : "";
+      st.ts = st.done ? now.getTime() : 0;
+      row.querySelector(".at").textContent = st.at ? st.at + " 완료" : "";
       row.classList.toggle("done", st.done);
       btn.textContent = st.done ? "완료" : "미완";
       save(); updateProgress();
@@ -219,7 +266,16 @@ document.getElementById("copy").addEventListener("click", async () => {
     const done = ex.sets.map((s, i) => state[`${ex.id}-${i}`]).filter(st => st && st.done);
     lines.push(`${ex.name.slice(2)}: ` + (done.length ? done.map(st => `${st.kg}kg×${st.reps || "?"}`).join(", ") : "안 함"));
   });
-  if (state.memo) lines.push("메모: " + state.memo);
+  const order = [];
+  EXERCISES.forEach(ex => ex.sets.forEach((s, i) => {
+    const st = state[`${ex.id}-${i}`];
+    if (st && st.done) order.push({ ts: st.ts || 0, line: `${st.at || "?"} ${ex.name.slice(0, 1)} ${i + 1}세트 ${st.kg}kg×${st.reps || "?"}` });
+  }));
+  if (order.length) {
+    lines.push("", "실제 순서");
+    order.sort((a, b) => a.ts - b.ts).forEach(o => lines.push(o.line));
+  }
+  if (state.memo) lines.push("", "메모: " + state.memo);
   const text = lines.join("\n");
   try { await navigator.clipboard.writeText(text); toast("복사했어요. 대화창에 붙여 주세요"); }
   catch (e) { memo.value = text; memo.select(); toast("복사가 막혀서 메모 칸에 넣었어요. 길게 눌러 복사"); }
