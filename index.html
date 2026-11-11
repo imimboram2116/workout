@@ -232,7 +232,7 @@ function makeRow(ex, s, i) {
       <div class="no">${i + 1}세트<small>${s.extra ? "추가 · " : s.optional ? "선택 · " : ""}목표 ${s.goal}</small><small class="at">${st.at ? st.at + " 완료" : ""}</small></div>
       <label class="field"><input type="number" inputmode="decimal" step="0.5" value="${st.kg}" aria-label="무게">kg</label>
       <label class="field"><input type="number" inputmode="numeric" placeholder="${s.goal.split("~").pop()}" value="${st.reps}" aria-label="횟수">회</label>
-      <button class="check">${st.done ? "완료" : "미완"}</button>`;
+      <button class="check">${st.done ? "완료" : "도전"}</button>`;
     const [kgIn, repsIn] = row.querySelectorAll("input");
     const btn = row.querySelector(".check");
     kgIn.addEventListener("input", () => { st.kg = kgIn.value; save(); });
@@ -245,7 +245,7 @@ function makeRow(ex, s, i) {
       st.ts = st.done ? now.getTime() : 0;
       row.querySelector(".at").textContent = st.at ? st.at + " 완료" : "";
       row.classList.toggle("done", st.done);
-      btn.textContent = st.done ? "완료" : "미완";
+      btn.textContent = st.done ? "완료" : "도전";
       save(); updateProgress();
     });
     return row;
@@ -275,6 +275,13 @@ EXERCISES.forEach(ex => {
     save();
   });
   card.appendChild(add);
+  const exMemo = document.createElement("textarea");
+  exMemo.className = "memo";
+  exMemo.rows = 2;
+  exMemo.placeholder = "이 종목 메모: 자극 위치, 통증, 더 한 세트 등";
+  exMemo.value = state[`${ex.id}-memo`] || "";
+  exMemo.addEventListener("input", () => { state[`${ex.id}-memo`] = exMemo.value; save(); });
+  card.appendChild(exMemo);
   list.appendChild(card);
 });
 
@@ -311,6 +318,8 @@ document.getElementById("copy").addEventListener("click", async () => {
     lines.push("", "실제 순서");
     order.sort((a, b) => a.ts - b.ts).forEach(o => lines.push(o.line));
   }
+  const exMemos = EXERCISES.filter(ex => state[`${ex.id}-memo`]).map(ex => `${ex.name.slice(0, 1)} ${ex.name.slice(2)}: ${state[`${ex.id}-memo`]}`);
+  if (exMemos.length) { lines.push("", "종목 메모"); exMemos.forEach(m => lines.push(m)); }
   if (state.memo) lines.push("", "메모: " + state.memo);
   const text = lines.join("\n");
   try { await navigator.clipboard.writeText(text); toast("복사했어요. 대화창에 붙여 주세요"); }
