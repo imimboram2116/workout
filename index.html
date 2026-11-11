@@ -100,8 +100,7 @@
     <a href="https://commons.wikimedia.org/wiki/File:How_to_do_an_Overhead_Press.jpg">오버헤드 프레스</a> RangerJim, CC BY-SA 4.0 ·
     <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-1.png">숄더 프레스 머신 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-2.png">2</a> ·
     <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-1.png">사이드 래터럴 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-2.png">2</a> ·
-    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-1.png">프론트 레이즈 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-2.png">2</a> — Everkinetic, CC BY-SA 3.0 ·
-    <a href="https://commons.wikimedia.org/wiki/File:Pec_deck_Fly.jpg">펙덱</a> Aliva Sahoo, CC BY-SA 4.0.
+    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-1.png">프론트 레이즈 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-2.png">2</a> — Everkinetic, CC BY-SA 3.0.
     크기만 줄였고 내용은 고치지 않음. 몸 윤곽 그림은 직접 그린 것.
   </div>
 </main>
@@ -160,7 +159,7 @@ const EXERCISES = [
     sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15", optional: true } ]
   },
   {
-    id: "pec", photos: [ { src: "img/pec.jpg", cap: "기구 모습 (센터 기구와 다를 수 있음)" } ], figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
+    id: "pec", photos: [], figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
     presc: "10kg × 15회 × 3세트",
     target: "겨드랑이 바로 아래~옆가슴",
     cues: [
@@ -259,7 +258,7 @@ EXERCISES.forEach(ex => {
   card.innerHTML = `
     <h2>${ex.name}</h2>
     <div class="presc">${ex.presc}</div>
-    <div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>
+    ${ex.photos.length ? `<div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>` : ""}
     <div class="target">자극점: <b>${ex.target}</b></div>
     <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
     <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
