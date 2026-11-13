@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>상체 B 체크</title>
+<title>상체 A 체크</title>
 <style>
   :root {
     --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1f; --sub: #6b6b70;
@@ -72,6 +72,7 @@
   .photos { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
   .photos figure { margin: 0; flex: 1; min-width: 0; max-width: 240px; text-align: center; font-size: 12px; color: var(--sub); }
   .photos img { width: 100%; height: 190px; object-fit: contain; background: #fff; border-radius: 8px; border: 1px solid var(--line); }
+  .link { display: inline-block; margin-top: 8px; font-size: 14px; color: var(--accent); }
   .credits { margin-top: 20px; font-size: 11px; color: var(--sub); }
   .credits a { color: var(--sub); }
   .figs { display: flex; gap: 8px; margin-top: 10px; }
@@ -86,22 +87,28 @@
 <body>
 <main>
   <header>
-    <h1>상체 B (밀기)</h1>
+    <h1>상체 A (당기기), 무릎 쉬는 판</h1>
     <p id="date"></p>
   </header>
   <div class="progress"><div id="bar"></div></div>
   <div class="progress-label" id="plabel"></div>
-  <div class="note">허리가 뻐근해지면 그 종목에서 바로 멈추기. 서 있는 동안 왼쪽 무릎이 불편하면 ①은 건너뛰고 ②부터.</div>
+  <div class="note"><b>오늘은 무릎 쉬는 날</b> (11/12 증식치료 주사 다음 날, 하체 B 취소)
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li>서 있을 때 체중은 두 발에 고르게. 왼발 하나로 버티지 않기</li>
+    <li>어느 종목이든 왼쪽 무릎 안쪽이 쥐어짜이면 그 종목은 그 자리에서 빼기</li>
+    <li>유산소(걷기, 러닝) 없음. 기구 사이 이동도 천천히</li>
+    <li>허리가 뻐근해지면 그 종목에서 바로 멈추기</li>
+    <li>끝나고 진통제가 필요하면 소염진통제 말고 아세트아미노펜(타이레놀)</li>
+  </ul></div>
   <div class="legend"><span><i style="background:var(--hit)"></i>주로 자극</span><span><i style="background:var(--hit2)"></i>같이 쓰임</span><span><i style="background:var(--avoid)"></i>여기가 당기면 자세 점검</span></div>
   <div id="list"></div>
   <textarea class="memo" id="memo" rows="3" placeholder="메모: 무릎, 허리 상태, 자극 위치 등"></textarea>
   <div class="credits">
-    그림 출처 (위키미디어 공용):
-    <a href="https://commons.wikimedia.org/wiki/File:How_to_do_an_Overhead_Press.jpg">오버헤드 프레스</a> RangerJim, CC BY-SA 4.0 ·
-    <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-1.png">숄더 프레스 머신 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Shoulder-press-machine-2.png">2</a> ·
-    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-1.png">사이드 래터럴 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-lateral-raises-2.png">2</a> ·
-    <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-1.png">프론트 레이즈 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Dumbbell-front-raises-2.png">2</a> — Everkinetic, CC BY-SA 3.0.
-    크기만 줄였고 내용은 고치지 않음. 몸 윤곽 그림은 직접 그린 것.
+    그림 출처 (위키미디어 공용, Everkinetic, CC BY-SA 3.0):
+    <a href="https://commons.wikimedia.org/wiki/File:Climbers-chin-up-1.png">턱걸이 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Climbers-chin-up-2.png">2</a>,
+    <a href="https://commons.wikimedia.org/wiki/File:Cable-seated-rows-1.png">시티드 케이블 로우 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Cable-seated-rows-2.png">2</a>,
+    <a href="https://commons.wikimedia.org/wiki/File:Triceps-pushdown-with-rope-1.gif">로프 푸시다운 1</a>, <a href="https://commons.wikimedia.org/wiki/File:Triceps-pushdown-with-rope-2.gif">2</a>.
+    크기와 파일 형식만 바꿨고 내용은 고치지 않음. 몸 윤곽 그림은 직접 그린 것.
   </div>
 </main>
 <div class="bar">
@@ -113,60 +120,73 @@
 <script>
 const EXERCISES = [
   {
-    id: "ohp", photos: [ { src: "img/ohp.jpg", cap: "동작 순서 (영문 그림)" } ], figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "앞에서 본 모습: 어깨 앞쪽" }, { view: "back", main: ["triceps"], sub: [], cap: "뒤에서 본 모습: 팔 뒤쪽" } ], name: "① 바벨 오버헤드 프레스",
-    presc: "15kg × 12~15회 × 2세트 + 10kg × 20회 × 1세트",
-    target: "어깨 앞쪽(전면삼각근), 팔 뒤쪽(삼두)",
+    id: "chin", photos: [ { src: "img/chin-2.jpg", cap: "시작 (팔 펴고 매달림)" }, { src: "img/chin-1.jpg", cap: "끝 (가슴을 손잡이 쪽으로)" } ],
+    figs: [ { view: "back", main: ["lat"], sub: ["midBack"], cap: "뒤에서 본 모습: 겨드랑이 아래 등(광배)" }, { view: "front", main: [], sub: ["biceps"], cap: "앞에서 본 모습: 팔 앞쪽이 같이 쓰임" } ],
+    name: "① 친딥 머신 턱걸이 (고정 발판, 자기 체중)",
+    presc: "자기 체중 15~18회 × 4세트 (11/9: 15, 18, 15, 18회)",
+    target: "겨드랑이 아래 등(광배근), 팔 앞쪽(이두)",
+    link: { href: "https://www.youtube.com/results?search_query=" + encodeURIComponent("어시스트 풀업 머신 자세"), t: "자세 영상 찾아보기 (유튜브 검색)" },
     cues: [
-      { warn: true, t: "허리가 뒤로 꺾이면 그 세트에서 바로 10kg로 내리기" },
-      { t: "1세트 뒤 허리가 뻐근하면 2세트째는 10kg" },
-      { t: "엉덩이와 배에 힘, 갈비뼈를 내린 채 밀기" },
-      { t: "바가 얼굴 앞을 지날 때 머리를 살짝 뒤로, 지나가면 다시 앞으로" },
-      { warn: true, t: "무릎은 잠그지 말고 살짝 풀기. 왼쪽 무릎이 불편하면 이 종목은 건너뛰기" }
+      { warn: true, t: "시작 전 무릎 확인: 발판에 무릎을 대거나 발을 디딜 때 왼쪽 무릎이 눌려 아프면 이 종목은 건너뛰고 ②부터" },
+      { warn: true, t: "발판에 오를 때는 오른발 먼저, 내려올 때도 왼발 하나로 체중 받으며 뛰어내리지 않기" },
+      { t: "그림은 맨몸 턱걸이라 다리가 떠 있음. 오늘 기구는 발판이 고정이라 다리는 그대로 둔 채 상체만 끌어올림" },
+      { t: "당기기 전에 어깨를 귀에서 멀리 내리기 (견갑 잡기). 이 상태를 세트 내내 유지" },
+      { t: "턱을 내미는 게 아니라 가슴을 손잡이 쪽으로 끌어올린다는 느낌" },
+      { t: "내려갈 때 2초 천천히. 맨 아래에서 팔은 펴되 어깨가 귀로 딸려 올라가지 않게" },
+      { t: "18회에서 자세가 흔들리면 그 세트는 15회로 끝" }
     ],
-    sets: [ { kg: 15, goal: "12~15" }, { kg: 15, goal: "12~15" }, { kg: 10, goal: "20" } ]
+    sets: [ { kg: 0, goal: "15~18" }, { kg: 0, goal: "15~18" }, { kg: 0, goal: "15~18" }, { kg: 0, goal: "15~18" } ]
   },
   {
-    id: "smp", photos: [ { src: "img/smp-1.jpg", cap: "시작" }, { src: "img/smp-2.jpg", cap: "끝" } ], figs: [ { view: "front", main: ["frontDelt"], sub: ["sideDelt"], cap: "어깨 앞쪽이 주로, 옆쪽도 같이" } ], name: "② 숄더 프레스 머신",
-    presc: "5kg × 15회 × 3세트",
-    target: "어깨 앞쪽~옆쪽",
+    id: "row", photos: [ { src: "img/row-2.jpg", cap: "시작 (팔 펴고 등 세움)" }, { src: "img/row-1.jpg", cap: "끝 (팔꿈치를 몸 뒤로)" } ],
+    figs: [ { view: "back", main: ["midBack"], sub: ["lat", "rearDelt"], cap: "등 가운데(날개뼈 사이)가 주로, 광배도 같이" } ],
+    name: "② 시티드 케이블 로우",
+    presc: "20kg × 15회 × 2세트 + 18kg × 15회 × 1세트",
+    target: "등 가운데(날개뼈 사이), 광배",
+    link: { href: "https://www.youtube.com/results?search_query=" + encodeURIComponent("시티드 케이블 로우 자세"), t: "자세 영상 찾아보기 (유튜브 검색)" },
     cues: [
-      { t: "좌석은 조금 높이고, 팔꿈치는 몸통보다 살짝 앞" },
-      { t: "등을 등받이에 붙인 채로 밀기" },
-      { t: "맨 위에서 팔꿈치를 끝까지 잠그지 않기" }
+      { warn: true, t: "다리로 발판을 밀지 않기. 무릎은 살짝만 굽힌 채 고정하고 상체만 당김" },
+      { warn: true, t: "앉고 일어날 때 손잡이부터 내려놓고 손으로 짚고 일어나기. 왼다리로 밀어 일어나지 않기" },
+      { t: "가슴을 펴고 허리를 세운 채, 팔꿈치를 몸 뒤로 보내며 날개뼈를 모음" },
+      { t: "당길 때 상체를 뒤로 젖히지 않기. 젖히면 반동이 허리로 감" },
+      { t: "돌아갈 때 2초 천천히, 팔이 펴질 때 어깨가 앞으로 딸려 나가도 허리는 세운 채" },
+      { t: "11/9에 20kg 2세트째 10회에서 내림. 20kg가 버거우면 바로 18kg로" },
+      { t: "손아귀가 등보다 먼저 지치면 무게 문제 (9/23, 10/7 이력). 그때도 18kg로" }
     ],
-    sets: [ { kg: 5, goal: "15" }, { kg: 5, goal: "15" }, { kg: 5, goal: "15" } ]
+    sets: [ { kg: 20, goal: "15" }, { kg: 20, goal: "15" }, { kg: 18, goal: "15" } ]
   },
   {
-    id: "lat", photos: [ { src: "img/lat-1.jpg", cap: "시작" }, { src: "img/lat-2.jpg", cap: "끝 (어깨 높이까지)" } ], figs: [ { view: "front", main: ["sideDelt"], sub: [], avoid: ["traps"], cap: "어깨 바깥쪽. 목 옆이 당기면 너무 높이 든 것" } ], name: "③ 덤벨 사이드 래터럴 레이즈",
-    presc: "2kg × 15회 × 3세트",
-    target: "어깨 바깥쪽(측면삼각근)",
+    id: "sap", photos: [],
+    figs: [ { view: "back", main: ["lat"], sub: [], cap: "겨드랑이 밑에서 뒤쪽(광배)" }, { view: "front", main: [], sub: [], avoid: ["frontDelt"], cap: "어깨 앞쪽이 뜨거우면 자세 점검" } ],
+    name: "③ 케이블 스트레이트 암 풀다운",
+    presc: "11.5kg (10kg 스택 + 1.5kg 아령 1개) × 15회 × 3세트. 4세트는 하지 않기",
+    target: "겨드랑이 밑에서 뒤쪽(광배근)",
+    link: { href: "https://www.youtube.com/results?search_query=" + encodeURIComponent("스트레이트 암 풀다운 자세"), t: "자세 영상 찾아보기 (유튜브 검색). 공개 그림 자료가 없어 그림은 생략" },
     cues: [
-      { t: "어깨 높이까지만. 더 높이면 목 옆(승모근)이 대신 일함" },
-      { t: "팔꿈치를 살짝 굽혀 고정, 새끼손가락 쪽이 살짝 위로" },
-      { warn: true, t: "반동 쓰지 않기. 몸을 흔들면 허리에 실림 (9/28 이 종목 뒤 허리 뻐근)" },
-      { t: "내릴 때 2~3초 천천히" }
+      { t: "기구에 더 가까이 서기 (9/23 기구에 붙어 선 세트에서 광배 자극이 처음 옴)" },
+      { warn: true, t: "발은 어깨너비, 무릎은 살짝만 풀기. 체중은 두 발에 고르게 두고 왼발로 버티지 않기" },
+      { t: "상체를 살짝 숙이고 팔꿈치는 살짝 굽힌 채 고정. 팔을 펴서 반원 그리듯 허벅지 앞까지 내림" },
+      { t: "맨 아래에서 겨드랑이를 조이는 느낌으로 1초" },
+      { t: "무게 기준은 광배 자극이 유지되는지. 어깨 앞쪽이나 팔이 대신 일하면 무게보다 서는 위치를 먼저 고치기" },
+      { warn: true, t: "허리가 뻐근하면 그 세트에서 멈춤 (9/23 4세트째 끝 횟수에서 허리 뻐근)" }
     ],
-    sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15" }, { kg: 2, goal: "15" } ]
+    sets: [ { kg: 11.5, goal: "15" }, { kg: 11.5, goal: "15" }, { kg: 11.5, goal: "15" } ]
   },
   {
-    id: "front", photos: [ { src: "img/front-1.jpg", cap: "시작" }, { src: "img/front-2.jpg", cap: "끝 (어깨 높이까지)" } ], figs: [ { view: "front", main: ["frontDelt"], sub: [], cap: "어깨 앞쪽" } ], name: "④ 덤벨 프론트 레이즈",
-    presc: "2kg × 15회 × 1세트 (여력 있으면 2세트)",
-    target: "어깨 앞쪽",
+    id: "push", photos: [ { src: "img/push-1.jpg", cap: "시작 (팔꿈치 옆구리)" }, { src: "img/push-2.jpg", cap: "끝 (완전히 펴고 2초)" } ],
+    figs: [ { view: "back", main: ["triceps"], sub: [], cap: "팔 뒤쪽(삼두)" }, { view: "front", main: [], sub: [], avoid: ["frontDelt"], cap: "어깨가 뜨거우면 팔꿈치가 움직인 것" } ],
+    name: "④ 로프 케이블 트라이셉스 푸시다운",
+    presc: "10kg × 15회 × 3세트 (어깨 열감이 있으면 4kg)",
+    target: "팔 뒤쪽(삼두)",
+    link: { href: "https://www.youtube.com/results?search_query=" + encodeURIComponent("로프 푸시다운 자세"), t: "자세 영상 찾아보기 (유튜브 검색)" },
     cues: [
-      { t: "①②에서 어깨 앞쪽을 이미 6세트 씀. 지치면 1세트로 끝" },
-      { t: "어깨 높이까지만, 상체를 뒤로 젖히지 않기" }
-    ],
-    sets: [ { kg: 2, goal: "15" }, { kg: 2, goal: "15", optional: true } ]
-  },
-  {
-    id: "pec", photos: [], figs: [ { view: "front", main: ["pecOuter"], sub: ["pec"], cap: "겨드랑이 바로 아래, 가슴 바깥쪽" } ], name: "⑤ 펙덱 플라이 (가슴)",
-    presc: "10kg × 15회 × 3세트",
-    target: "겨드랑이 바로 아래~옆가슴",
-    cues: [
-      { warn: true, t: "등을 패드에서 떼지 않기" },
-      { t: "확인 1: 손잡이가 어깨 높이와 나란한지 (시트 높이)" },
-      { t: "확인 2: 팔을 몸 뒤까지 열지 않는지 (벌리는 범위)" },
-      { t: "자극이 안 오면 무게보다 범위와 자세를 먼저 고치기" }
+      { t: "1. 팔꿈치를 옆구리에 붙이고, 윗팔은 거의 안 움직이고 팔꿈치 아래만 펴기" },
+      { t: "2. 맨 아래에서 로프를 양옆으로 벌리며 완전히 펴고 2초 버티기" },
+      { t: "3. 올라갈 때 3초 천천히" },
+      { warn: true, t: "4. 몸통을 숙여 체중으로 누르지 않기 (11/9 첫 세트에 허리를 굽혀 자극이 잘못 옴)" },
+      { t: "5. 가벼우면 무게 대신 횟수를 20회로" },
+      { t: "6. 한 세트는 옆에서 영상으로 찍어 팔꿈치가 움직이는지 확인" },
+      { warn: true, t: "서서 하는 동작이라 무릎은 살짝 풀고 두 발에 고르게. 끝나고 어깨 열감이 있으면 메모 (10/22, 11/4 10kg 뒤 열감 이력)" }
     ],
     sets: [ { kg: 10, goal: "15" }, { kg: 10, goal: "15" }, { kg: 10, goal: "15" } ]
   }
@@ -175,7 +195,7 @@ const EXERCISES = [
 const today = new Date();
 const pad = n => String(n).padStart(2, "0");
 const dateKey = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
-const STORE = "upperB:" + dateKey;
+const STORE = "upperA:" + dateKey;
 const days = ["일", "월", "화", "수", "목", "금", "토"];
 document.getElementById("date").textContent = `${dateKey} (${days[today.getDay()]}) · 세트 끝날 때마다 횟수 넣고 완료 누르기`;
 
@@ -191,7 +211,11 @@ const SHAPES = {
   pec: '<path d="M99,60 L73,61 Q66,76 70,93 Q86,101 99,95 Z"/>',
   pecOuter: '<ellipse cx="75" cy="80" rx="7" ry="13"/>',
   triceps: '<path d="M47,76 Q42,98 44,120 L55,121 Q57,98 59,84 Z"/>',
-  backTraps: '<path d="M92,44 L66,55 L84,62 L100,100 L100,44 Z"/>'
+  backTraps: '<path d="M92,44 L66,55 L84,62 L100,100 L100,44 Z"/>',
+  lat: '<path d="M72,84 Q66,110 80,138 L99,146 L99,108 Q84,100 72,84 Z"/>',
+  midBack: '<path d="M84,62 L99,62 L99,98 L88,94 Q80,78 84,62 Z"/>',
+  rearDelt: '<ellipse cx="62" cy="67" rx="8" ry="12"/>',
+  biceps: '<path d="M48,78 Q43,98 45,120 L56,121 Q58,98 60,86 Z"/>'
 };
 const BASE_HALF = `
   <path d="M91,40 L91,48 Q80,52 66,55 Q50,56 46,72 L41,122 L37,166 L50,167 L55,124 L60,88 L70,94 L74,150 L100,155 L100,40 Z"/>`;
@@ -260,8 +284,9 @@ EXERCISES.forEach(ex => {
     <div class="presc">${ex.presc}</div>
     ${ex.photos.length ? `<div class="photos">${ex.photos.map(p => `<figure><img src="${p.src}" alt="${ex.name} ${p.cap}" loading="lazy"><figcaption>${p.cap}</figcaption></figure>`).join("")}</div>` : ""}
     <div class="target">자극점: <b>${ex.target}</b></div>
+    ${ex.link ? `<a class="link" href="${ex.link.href}" target="_blank" rel="noopener">${ex.link.t}</a>` : ""}
     <div class="figs">${ex.figs.map(f => `<div class="fig">${bodySvg(f)}${f.cap}</div>`).join("")}</div>
-    <details><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
+    <details open><summary>주의점</summary><ul>${ex.cues.map(c => `<li class="${c.warn ? "warn" : ""}">${c.t}</li>`).join("")}</ul></details>
     <div class="sets"></div>`;
   const setsEl = card.querySelector(".sets");
   allSets(ex).forEach((s, i) => setsEl.appendChild(makeRow(ex, s, i)));
@@ -304,7 +329,7 @@ function toast(msg) {
 }
 
 document.getElementById("copy").addEventListener("click", async () => {
-  const lines = [`${dateKey} 상체 B`];
+  const lines = [`${dateKey} 상체 A`];
   EXERCISES.forEach(ex => {
     const done = allSets(ex).map((s, i) => state[`${ex.id}-${i}`]).filter(st => st && st.done);
     lines.push(`${ex.name.slice(2)}: ` + (done.length ? done.map(st => `${st.kg}kg×${st.reps || "?"}`).join(", ") : "안 함"));
