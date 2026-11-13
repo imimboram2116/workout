@@ -32,6 +32,7 @@
   .note { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); font-size: 14px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 14px; }
   .card h2 { font-size: 18px; margin: 0; }
+  .home-h { font-size: 17px; margin: 28px 0 10px; }
   .presc { color: var(--sub); font-size: 14px; margin-top: 2px; }
   .target { margin-top: 8px; font-size: 14px; }
   .target b { color: var(--accent); }
@@ -102,6 +103,8 @@
   </ul></div>
   <div class="legend"><span><i style="background:var(--hit)"></i>주로 자극</span><span><i style="background:var(--hit2)"></i>같이 쓰임</span><span><i style="background:var(--avoid)"></i>여기가 당기면 자세 점검</span></div>
   <div id="list"></div>
+  <h2 class="home-h">집에 와서 (맨몸, 기구 없음)</h2>
+  <div id="homeList"></div>
   <textarea class="memo" id="memo" rows="3" placeholder="메모: 무릎, 허리 상태, 자극 위치 등"></textarea>
   <div class="credits">
     그림 출처 (위키미디어 공용, Everkinetic, CC BY-SA 3.0):
@@ -191,8 +194,8 @@ const EXERCISES = [
     sets: [ { kg: 10, goal: "15" }, { kg: 10, goal: "15" }, { kg: 10, goal: "15" } ]
   },
   {
-    id: "deadbug", photos: [], figs: [],
-    name: "⑤ 데드버그 (맨몸, 시간 남으면)",
+    id: "deadbug", place: "home", photos: [], figs: [],
+    name: "⑤ 데드버그 (집에서, 시간 남으면)",
     presc: "좌우 번갈아 8회씩 × 2세트. 주 1~2회 붙이는 코어 종목이라 못 해도 괜찮음",
     target: "배 깊은 쪽, 허리 보호",
     link: { href: "https://www.youtube.com/results?search_query=" + encodeURIComponent("데드버그 운동 자세"), t: "자세 영상 찾아보기 (유튜브 검색)" },
@@ -322,7 +325,7 @@ EXERCISES.forEach(ex => {
   exMemo.value = state[`${ex.id}-memo`] || "";
   exMemo.addEventListener("input", () => { state[`${ex.id}-memo`] = exMemo.value; save(); });
   card.appendChild(exMemo);
-  list.appendChild(card);
+  (ex.place === "home" ? document.getElementById("homeList") : list).appendChild(card);
 });
 
 const memo = document.getElementById("memo");
